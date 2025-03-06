@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SkyWatcher</h1>
+        <input type="text" id="city" placeholder="Enter city name" required>
+        <button onclick="getWeather()">Get Weather</button>
+        <div id="weather-info"></div>
+        <div id="error-message" style="color:red;"></div>
+    </div>
+    
+    <script>
+        function getWeather() {
+            const city = document.getElementById('city').value.trim();
+            if (!city) {
+                document.getElementById('error-message').innerHTML = "Please enter a valid city name.";
+                return;
+            }
+            document.getElementById('error-message').innerHTML = "";  
+            
+            const apiKey = '4d2a03d7d5638954e99858a5dd18b2e4';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            
+            document.getElementById('weather-info').innerHTML = '<p>Loading...</p>';
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod !== 200) {
+                        document.getElementById('weather-info').innerHTML = `<p>${data.message}</p>`;
+                        return;
+                    }
+
+                    const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+                    
+                    const weatherInfoElement = document.getElementById('weather-info');
+                    weatherInfoElement.classList.add('slide-out');
+                    
+                    
+                    setTimeout(() => {
+                        weatherInfoElement.innerHTML = `
+                            <h2>${data.name}, ${data.sys.country}</h2>
+                            <img src="${iconUrl}" alt="Weather icon">
+                            <p>Temperature: ${data.main.temp}°C</p>
+                            <p>Weather: ${data.weather[0].description}</p>
+                            <p>Humidity: ${data.main.humidity}%</p>
+                            <p>Wind Speed: ${data.wind.speed} m/s</p>
+                        `;
+                        
+                        
+                        weatherInfoElement.classList.remove('slide-out');
+                        weatherInfoElement.classList.add('slide-in');
+                    }, 500); 
+
+                    setTimeout(getWeather, 10000); 
+                })
+                .catch(error => {
+                    document.getElementById('weather-info').innerHTML = '<p>Server Error</p>';
+                });
+        }
+    </script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: url('h1.webp') no-repeat center center fixed;
+        text-align: center;
+        padding: 50px;
+        background-size: cover;
+    }
+    .container {
+        background: rgba(255, 255, 255, 0.311);
+        padding: 20px;
+        border-radius: 20px;
+        display: inline-block;
+        width: 100%;
+        max-width: 400px;
+    }
+    input, button {
+        padding: 10px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+    }
+    button {
+        background: #34b1db84;
+        color: white;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #293fb9;
+    }
+    #weather-info {
+        margin-top: 20px;
+        position: relative;
+        opacity: 1;
+    }
+    img {
+        width: 100px;
+        height: 100px;
+    }
+    #error-message {
+        margin-top: 10px;
+    }
+
+    
+    .slide-out {
+        animation: slideOut 0.5s forwards;
+    }
+
+    
+    .slide-in {
+        animation: slideIn 0.5s forwards;
+    }
+
+    
+    @keyframes slideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+    }
+
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
