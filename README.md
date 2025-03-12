@@ -1,4 +1,4 @@
-# SkyWatcher - Weather Forecast App
+# Weather Wizard - Weather Forecast App
 
 SkyWatcher is a simple and interactive web application that allows users to get real-time weather updates for any city around the world. The app fetches weather data from the OpenWeather API and displays information such as temperature, weather condition, humidity, and wind speed. The UI features smooth animations for a seamless user experience.
 
